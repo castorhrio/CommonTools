@@ -87,6 +87,10 @@
     <Compile Include="CacheTool\RedisHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RabbitMQHelper.cs" />
+    <Compile Include="RabbitMQTool\EventMessage.cs" />
+    <Compile Include="RabbitMQTool\RabbitMQClient.cs" />
+    <Compile Include="RabbitMQTool\RabbitMQClientContext.cs" />
+    <Compile Include="RabbitMQTool\RabbitMQConfig.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
