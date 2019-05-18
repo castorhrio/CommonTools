@@ -1,9 +1,5 @@
 ﻿using RabbitMQ.Client;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CommonTools
 {
@@ -30,7 +26,6 @@ namespace CommonTools
 
         private RabbitMQHelper()
         {
-
         }
 
         public static RabbitMQHelper GetInstance(RabbitMQConfigModel mq_config)
@@ -38,7 +33,7 @@ namespace CommonTools
             if (mq_config == null)
                 return null;
 
-            _factory_multiplexer = new Lazy<IConnection>(() => 
+            _factory_multiplexer = new Lazy<IConnection>(() =>
             {
                 var factory = new ConnectionFactory
                 {
@@ -46,7 +41,7 @@ namespace CommonTools
                     Port = mq_config.port,
                     UserName = mq_config.user_name,
                     Password = mq_config.pass_word,
-                    RequestedChannelMax = mq_config.max_channel_count.HasValue?mq_config.max_channel_count.Value: _default_channel_count,
+                    RequestedChannelMax = mq_config.max_channel_count.HasValue ? mq_config.max_channel_count.Value : _default_channel_count,
                     AutomaticRecoveryEnabled = true
                 };
 

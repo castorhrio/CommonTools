@@ -1,10 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace CommonTools.RabbitMQTool
 {
@@ -27,18 +24,16 @@ namespace CommonTools.RabbitMQTool
 
         internal static EventMessageResult GetEventMessageResult(byte[] bytes)
         {
-            EventMessageResult result = null;
+            EventMessageResult result = new EventMessageResult();
             try
             {
-                using (MemoryStream ms = new MemoryStream(bytes))
-                {
-                    EventMessage message = JsonConvert.DeserializeObject<EventMessage>(ms.ToString());
-                    result.EventMessage = message;
+                EventMessage message = JsonConvert.DeserializeObject<EventMessage>(Encoding.UTF8.GetString(bytes));
+                result.EventMessage = message;
 
-                    if (message != null)
-                    {
-                        result.Messages = message.EventMessageBytes;
-                    }
+                if (message != null)
+                {
+                    result.Messages = message.EventMessageBytes;
+                    result.Status = true;
                 }
             }
             catch (Exception ex)
@@ -52,7 +47,7 @@ namespace CommonTools.RabbitMQTool
 
     public class EventMessageFactory
     {
-        public static EventMessage CreateEventMessageInstance<T>(T obj,string code) where T:class,new()
+        public static EventMessage CreateEventMessageInstance<T>(T obj, string code) where T : class, new()
         {
             try
             {

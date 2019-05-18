@@ -1,9 +1,4 @@
 ﻿using RabbitMQ.Client;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CommonTools.RabbitMQTool
 {
@@ -19,6 +14,6 @@ namespace CommonTools.RabbitMQTool
 
         public IModel ReceiveChannel { get; set; }
 
-        public string ReceiveQueueName { get; set; }
+        public string QueueName { get; set; }
     }
 }
