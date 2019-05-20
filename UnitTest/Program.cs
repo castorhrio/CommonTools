@@ -24,46 +24,15 @@ namespace UnitTest
 
         static void SendMessage()
         {
-            //string queue_name = ConfigurationManager.AppSettings["RabbitMQ_Queue"];
-            //string exchange_name = ConfigurationManager.AppSettings["RabbitMQ_Exchange"];
-            //string host = ConfigurationManager.AppSettings["RabbitMQ_Host"];
-            //int port = int.Parse(ConfigurationManager.AppSettings["RabbitMQ_Port"]);
-            //string user_name = ConfigurationManager.AppSettings["RabbitMQ_UserName"];
-            //string password = ConfigurationManager.AppSettings["RabbitMQ_Password"];
-
-            //ConnectionFactory factory = new ConnectionFactory();
-            //factory.HostName = host;
-            //factory.Port = port;
-            //factory.UserName = user_name;
-            //factory.Password = password;
-
-            //using (IConnection conn = factory.CreateConnection())
-            //{
-            //    using (IModel channel = conn.CreateModel())
-            //    {
-            //        channel.ExchangeDeclare(exchange_name, ExchangeType.Direct, true, false,null);
-            //        channel.QueueDeclare(queue_name, true, false, false, null);
-
-
-            //    }
-            //}
-
-            for (var i = 0; i < int.MaxValue; i++)
+            RabbitData data = new RabbitData
             {
-                RabbitData data = new RabbitData
-                {
-                    id = i,
-                    time = DateTime.Now,
-                    data = "this is data :" + i
-                };
+                id = 1,
+                time = DateTime.Now,
+                data = "this is data :" + 1
+            };
 
-                var send = EventMessageFactory.CreateEventMessageInstance(data, Guid.NewGuid().ToString("N"));
-                RabbitMQClient.Instance.EventTrigger(send);
-
-                Console.WriteLine("send message:" + i);
-            }
-
-            Console.Write("total count:" + int.MaxValue);
+            var send = EventMessageFactory.CreateEventMessageInstance(data);
+            RabbitMQClient.Instance.EventTrigger(send);
         }
 
         static void ReceiveMessage()
@@ -71,7 +40,6 @@ namespace UnitTest
             RabbitMQClient.Instance.ActionEvent += EventMessage;
             RabbitMQClient.Instance.OnListening();
         }
-
 
         private static void EventMessage(EventMessageResult result)
         {

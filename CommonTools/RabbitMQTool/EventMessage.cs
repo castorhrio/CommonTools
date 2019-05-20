@@ -47,14 +47,14 @@ namespace CommonTools.RabbitMQTool
 
     public class EventMessageFactory
     {
-        public static EventMessage CreateEventMessageInstance<T>(T obj, string code) where T : class, new()
+        public static EventMessage CreateEventMessageInstance<T>(T obj) where T : class, new()
         {
             try
             {
                 EventMessage event_msg = new EventMessage
                 {
                     CreateTime = DateTime.Now,
-                    EventMessageMarkCode = code,
+                    EventMessageMarkCode = Guid.NewGuid().ToString("N"),
                     EventMessageBytes = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(obj))
                 };
 
