@@ -15,7 +15,6 @@ namespace UnitTest
         static void Main(string[] args)
         {
             Console.WriteLine("start");
-            //SendMessage();
             Task.Factory.StartNew(() => SendMessage());
             Task.Factory.StartNew(() => ReceiveMessage());
             Console.ReadKey();
@@ -31,23 +30,20 @@ namespace UnitTest
                 data = "this is data :" + 1
             };
 
-            var send = EventMessageFactory.CreateEventMessageInstance(data);
-            RabbitMQClient.Instance.EventTrigger(send);
+            var send = MessageFactory.CreateMessageInstance(data);
+            RabbitMQClient.Instance.EventTrigger(send, 5000);
         }
 
         static void ReceiveMessage()
         {
             RabbitMQClient.Instance.ActionEvent += EventMessage;
-            RabbitMQClient.Instance.OnListening();
+            RabbitMQClient.Instance.OnListening(true);
         }
 
-        private static void EventMessage(EventMessageResult result)
+        private static void EventMessage(MessageResult result)
         {
-            var message = JsonConvert.DeserializeObject<RabbitData>(Encoding.UTF8.GetString(result.Messages));
-            if (result.Status)
-            {
-                Console.WriteLine("handle success !" + message.data);
-            }
+            var message = JsonConvert.DeserializeObject<RabbitData>(result.Messages);
+            Console.WriteLine("handle success !" + message.data);
         }
 
         class RabbitData

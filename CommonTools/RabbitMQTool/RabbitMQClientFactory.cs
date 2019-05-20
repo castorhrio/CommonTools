@@ -5,6 +5,17 @@ using System.Configuration;
 
 namespace CommonTools.RabbitMQTool
 {
+    public class RabbitMQClientContext
+    {
+        public IConnection SendConnection { get; set; }
+
+        public IModel SendChannel { get; set; }
+
+        public IConnection ReceiveConnection { get; set; }
+
+        public IModel ReceiveChannel { get; set; }
+    }
+
     public class RabbitMQClientFactory
     {
         private const ushort heartbeat = 60;
@@ -19,23 +30,10 @@ namespace CommonTools.RabbitMQTool
             RabbitMQClient.Instance = new RabbitMQClient()
             {
                 Config = config,
-                Context = new RabbitMQClientContext
-                {
-                    Id = Guid.NewGuid().ToString("N"),
-                    QueueName = GetRabbitMQConfig().QueueName
-                },
+                Context = new RabbitMQClientContext()
             };
 
-            using(IConnection conn = CreateConnection(config))
-            {
-                using(IModel channel = CreateChannel(conn))
-                {
-                    ExchangeDeclare(channel, config.ExchangeName, ExchangeType.Direct, true, false, null);
-                    QueueDeclare(channel, config.QueueName, true, false, false, null);
-                    QueueBind(channel, config.QueueName, config.ExchangeName, config.RouteKey, null);
-                }
-            }
-                return RabbitMQClient.Instance;
+            return RabbitMQClient.Instance;
         }
 
         /// <summary>
@@ -71,6 +69,21 @@ namespace CommonTools.RabbitMQTool
             return conn.CreateModel();
         }
 
+        public static void ExchangeDeclare(IModel channel, string exchangeName, string type, bool durable, bool autoDelete, IDictionary<string, object> arguments=null)
+        {
+            channel.ExchangeDeclare(exchangeName, type, durable, autoDelete, arguments);
+        }
+
+        public static void QueueDeclare(IModel channel, string queueName, bool durable, bool exclusive, bool autoDelete, IDictionary<string, object> arguments)
+        {
+            channel.QueueDeclare(queueName, durable, exclusive, autoDelete, arguments);
+        }
+
+        public static void QueueBind(IModel channel, string queue, string exchange, string routingKey, IDictionary<string, object> arguments=null)
+        {
+            channel.QueueBind(queue, exchange, routingKey, arguments);
+        }
+
         /// <summary>
         /// 获取RabbitMQ配置
         /// </summary>
@@ -101,21 +114,6 @@ namespace CommonTools.RabbitMQTool
             };
 
             return config;
-        }
-
-        private static void ExchangeDeclare(IModel channel, string exchangeName, string type, bool durable, bool autoDelete, IDictionary<string, object> arguments)
-        {
-            channel.ExchangeDeclare(exchangeName, type, durable, autoDelete, arguments);
-        }
-
-        private static void QueueDeclare(IModel channel, string queueName, bool durable, bool exclusive, bool autoDelete, IDictionary<string, object> arguments)
-        {
-            channel.QueueDeclare(queueName, durable, exclusive, autoDelete, arguments);
-        }
-
-        private static void QueueBind(IModel channel, string queue, string exchange, string routingKey, IDictionary<string, object> arguments)
-        {
-            channel.QueueBind(queue, exchange, routingKey, arguments);
         }
     }
 }

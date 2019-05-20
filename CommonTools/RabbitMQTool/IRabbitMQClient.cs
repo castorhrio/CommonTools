@@ -25,11 +25,11 @@ namespace CommonTools.RabbitMQTool
         /// <param name="message">消息实体</param>
         /// <param name="exchange">交换机名称</param>
         /// <param name="queue">队列名称</param>
-        void EventTrigger(EventMessage message);
+        void EventTrigger(MessageData message, int? delay);
 
         /// <summary>
         /// 消息队列监听器
         /// </summary>
-        void OnListening();
+        void OnListening(bool delay);
     }
 }
