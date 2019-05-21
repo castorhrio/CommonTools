@@ -74,7 +74,7 @@ namespace CommonTools.RabbitMQTool
             channel.ExchangeDeclare(exchangeName, type, durable, autoDelete, arguments);
         }
 
-        public static void QueueDeclare(IModel channel, string queueName, bool durable, bool exclusive, bool autoDelete, IDictionary<string, object> arguments)
+        public static void QueueDeclare(IModel channel, string queueName, bool durable, bool exclusive, bool autoDelete, IDictionary<string, object> arguments=null)
         {
             channel.QueueDeclare(queueName, durable, exclusive, autoDelete, arguments);
         }
@@ -88,7 +88,7 @@ namespace CommonTools.RabbitMQTool
         /// 获取RabbitMQ配置
         /// </summary>
         /// <returns></returns>
-        private static RabbitMQConfig GetRabbitMQConfig()
+        public static RabbitMQConfig GetRabbitMQConfig()
         {
             RabbitMQConfig config = null;
             string host = ConfigurationManager.AppSettings["RabbitMQ_Host"];

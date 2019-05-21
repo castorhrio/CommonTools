@@ -19,17 +19,13 @@ namespace CommonTools.RabbitMQTool
         /// </summary>
         event ActionEvent ActionEvent;
 
-        /// <summary>
-        /// 事件触发器
-        /// </summary>
-        /// <param name="message">消息实体</param>
-        /// <param name="exchange">交换机名称</param>
-        /// <param name="queue">队列名称</param>
-        void EventTrigger(MessageData message, int? delay);
 
-        /// <summary>
-        /// 消息队列监听器
-        /// </summary>
-        void OnListening(bool delay);
+        void Sender(MessageData message);
+
+        void OnListening();
+
+        void DelaySender(MessageData message, int delay_time);
+
+        void DelayListening();
     }
 }
