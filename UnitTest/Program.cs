@@ -5,7 +5,6 @@ using RabbitMQ.Client.Events;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace UnitTest
@@ -15,8 +14,13 @@ namespace UnitTest
         private static void Main(string[] args)
         {
             Console.WriteLine("start");
+            //for(int i = 0; i < 100; i++)
+            //{
+            //    Task.Factory.StartNew(() => SendMessage());
+            //    Task.Factory.StartNew(() => DelayReceive());
+            //}
             Task.Factory.StartNew(() => SendMessage());
-            //Task.Factory.StartNew(() => ReceiveMessage());
+            ////Task.Factory.StartNew(() => ReceiveMessage());
             Task.Factory.StartNew(() => DelayReceive());
             //Task.Factory.StartNew(Sender);
             //Task.Factory.StartNew(Receive);
@@ -26,7 +30,7 @@ namespace UnitTest
 
         private static void SendMessage()
         {
-            for(int i = 0; i < 5000; i++)
+            for (int i = 0; i < 1000; i++)
             {
                 RabbitData data = new RabbitData
                 {
@@ -37,7 +41,7 @@ namespace UnitTest
 
                 var send = MessageFactory.CreateMessageInstance(data);
                 //RabbitMQClient.Instance.Sender(send);
-                RabbitMQClient.Instance.DelaySender(send, 10000);
+                RabbitMQClient.Instance.DelaySender(send, 3000);
             }
         }
 
@@ -68,7 +72,7 @@ namespace UnitTest
         private static void SendDelayMsg()
         {
             //首先创建一个连接工厂对象
-            var factory = new ConnectionFactory() { HostName = "localhost", UserName = "admin", Password = "mobstaz",Port= 5672 };
+            var factory = new ConnectionFactory() { HostName = "localhost", UserName = "admin", Password = "mobstaz", Port = 5672 };
             //然后使用工厂对象创建一个TCP连接
             using (var connection = factory.CreateConnection())
             {
@@ -139,7 +143,6 @@ namespace UnitTest
                                          routingKey: "log.error",
                                          basicProperties: properties,
                                          body: body);
-
                 }
             }
         }
@@ -191,12 +194,11 @@ namespace UnitTest
                 {
                     using (var channel = connection.CreateModel())
                     {
-
                         Dictionary<string, object> dic = new Dictionary<string, object>();
                         //dic.Add("x-expires", 30000);
-                        dic.Add("x-message-ttl", 10000);//队列上消息过期时间，应小于队列过期时间  
-                        dic.Add("x-dead-letter-exchange", "exchange-direct");//过期消息转向路由  
-                        dic.Add("x-dead-letter-routing-key", "routing-delay");//过期消息转向路由相匹配routingkey  
+                        dic.Add("x-message-ttl", 10000);//队列上消息过期时间，应小于队列过期时间
+                        dic.Add("x-dead-letter-exchange", "exchange-direct");//过期消息转向路由
+                        dic.Add("x-dead-letter-routing-key", "routing-delay");//过期消息转向路由相匹配routingkey
                         //创建一个名叫"zzhello"的消息队列
                         channel.QueueDeclare(queue: "zzhello",
                             durable: true,
