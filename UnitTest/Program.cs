@@ -39,13 +39,13 @@ namespace UnitTest
             string delay_time = 3000 + "";
             for(int i = 0; i < 10000; i++)
             {
-                RabbitMQ.GetInstance.Sender(i, delay_time);
+                RabbitMQ.GetInstance().Sender(i, delay_time);
             }
         }
 
         private static void Receiver()
         {
-            RabbitMQ.GetInstance.Receiver();
+            RabbitMQ.GetInstance().Receiver();
         }
 
         private static void SendMessage()
@@ -60,7 +60,6 @@ namespace UnitTest
                 };
 
                 var send = MessageFactory.CreateMessageInstance(data);
-                //RabbitMQClient.Instance.Sender(send);
                 RabbitMQClient.Instance.DelaySender(send, 3000);
             }
         }

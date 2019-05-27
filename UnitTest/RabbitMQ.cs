@@ -28,56 +28,36 @@ namespace UnitTest
         private static string dead_route = "dead_route";
         private static string dead_queue = "dead_queue";
 
+        private static IConnection conn;
+        private static IModel channel;
+
         private RabbitMQ()
         {
+            ConnectionFactory factory = new ConnectionFactory()
+            {
+                HostName = host,
+                Port = port,
+                UserName = user_name,
+                Password = password,
+                RequestedHeartbeat = 60,
+                AutomaticRecoveryEnabled = true
+            };
+
+            conn = factory.CreateConnection();
+            channel = conn.CreateModel();
+
             DeclareDelay(channel);
             DeclareDead(channel);
         }
 
-        private static IConnection conn;
-        private static IModel channel;
-        private static RabbitMQ _instance;
-
-        private static readonly object _lock = new object();
-
-        public static RabbitMQ GetInstance
+        private static class RabbitMQInstance
         {
-            get
-            {
-                //if (_instance == null)
-                //{
-                //    lock (_lock)
-                //    {
+            public static RabbitMQ _instance = new RabbitMQ();
+        }
 
-                //    }
-
-                //}
-
-                if (_instance == null)
-                {
-                    ConnectionFactory factory = new ConnectionFactory()
-                    {
-                        HostName = host,
-                        Port = port,
-                        UserName = user_name,
-                        Password = password,
-                        RequestedHeartbeat = 60,
-                        AutomaticRecoveryEnabled = true
-                    };
-
-                    conn = factory.CreateConnection();
-                    channel = conn.CreateModel();
-
-                    _instance = new RabbitMQ();
-                }
-
-                return _instance;
-            }
-
-            set
-            {
-                _instance = value;
-            }
+        public static RabbitMQ GetInstance()
+        {
+            return RabbitMQInstance._instance;
         }
 
         public void Sender(int data,string delay_time)
