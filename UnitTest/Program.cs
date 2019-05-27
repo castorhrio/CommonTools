@@ -13,19 +13,39 @@ namespace UnitTest
     {
         private static void Main(string[] args)
         {
+            //Console.WriteLine("start");
+            ////for(int i = 0; i < 100; i++)
+            ////{
+            ////    Task.Factory.StartNew(() => SendMessage());
+            ////    Task.Factory.StartNew(() => DelayReceive());
+            ////}
+            //Task.Factory.StartNew(() => SendMessage());
+            //////Task.Factory.StartNew(() => ReceiveMessage());
+            //Task.Factory.StartNew(() => DelayReceive());
+            ////Task.Factory.StartNew(Sender);
+            ////Task.Factory.StartNew(Receive);
+            //Console.ReadKey();
+            //Console.WriteLine("end");
+
             Console.WriteLine("start");
-            //for(int i = 0; i < 100; i++)
-            //{
-            //    Task.Factory.StartNew(() => SendMessage());
-            //    Task.Factory.StartNew(() => DelayReceive());
-            //}
-            Task.Factory.StartNew(() => SendMessage());
-            ////Task.Factory.StartNew(() => ReceiveMessage());
-            Task.Factory.StartNew(() => DelayReceive());
-            //Task.Factory.StartNew(Sender);
-            //Task.Factory.StartNew(Receive);
+            Task.Factory.StartNew(Send);
+            Task.Factory.StartNew(Receiver);
             Console.ReadKey();
             Console.WriteLine("end");
+        }
+
+        private static void Send()
+        {
+            string delay_time = 3000 + "";
+            for(int i = 0; i < 10000; i++)
+            {
+                RabbitMQ.GetInstance.Sender(i, delay_time);
+            }
+        }
+
+        private static void Receiver()
+        {
+            RabbitMQ.GetInstance.Receiver();
         }
 
         private static void SendMessage()
